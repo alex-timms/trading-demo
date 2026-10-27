@@ -9,5 +9,8 @@
         <module name="trading-demo" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="src1" target="25" />
+    </bytecodeTargetLevel>
   </component>
 </project>
