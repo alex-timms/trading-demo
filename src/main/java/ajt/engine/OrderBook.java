@@ -1,11 +1,14 @@
 package ajt.engine;
 
 import ajt.common.enums.Side;
+import ajt.common.exceptions.NoAskException;
+import ajt.common.exceptions.NoBidException;
 import ajt.common.ext.Orders;
 
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TreeMap;
 
 public class OrderBook {
@@ -53,5 +56,17 @@ public class OrderBook {
         (o.side == Side.BUY ? bids : asks)
                 .computeIfAbsent(o.price, p -> new Orders()).addLast(o);
         byId.put(o.orderId, o);
+    }
+
+    public Long getSpread() throws Exception {
+        long maxBid = Optional.of(bids)
+                .map(TreeMap::firstEntry)
+                .map(Map.Entry::getKey)
+                .orElseThrow(NoBidException::new);
+        long minAsk = Optional.of(asks)
+                .map(TreeMap::firstEntry)
+                .map(Map.Entry::getKey)
+                .orElseThrow(NoAskException::new);
+        return maxBid - minAsk;
     }
 }
