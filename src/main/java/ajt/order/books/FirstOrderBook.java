@@ -14,6 +14,18 @@ import static ajt.common.enums.Side.BUY;
 
 public class FirstOrderBook implements OrderBook2 {
 
+    public TreeMap<Long, Orders> getAsks() {
+        return asks;
+    }
+
+    public TreeMap<Long, Orders> getBids() {
+        return bids;
+    }
+
+    public Map<Long, Order> getById() {
+        return byId;
+    }
+
     // bids: highest price first;
     private final TreeMap<Long, Orders> bids = new TreeMap<>(Comparator.reverseOrder());
     // asks: lowest price first;
@@ -32,7 +44,11 @@ public class FirstOrderBook implements OrderBook2 {
         Side side = o.side;
         Long price = o.price;
         var resolvedBook = side == BUY ? bids : asks;
-        Orders priceOrders = resolvedBook.getOrDefault(price, new Orders());
+        Orders priceOrders = resolvedBook.get(price);
+        if (priceOrders == null) {
+            priceOrders = new Orders();
+            resolvedBook.put(price, priceOrders);
+        }
         priceOrders.add(o);
         byId.put(id, o);
     }
