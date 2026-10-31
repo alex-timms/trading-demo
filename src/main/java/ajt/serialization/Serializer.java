@@ -1,4 +1,7 @@
 package ajt.serialization;
 
-public interface Serializer {
+import java.nio.ByteBuffer;
+
+public interface Serializer<T> {
+    ByteBuffer serialize(T o);
 }
