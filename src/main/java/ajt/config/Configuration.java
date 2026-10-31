@@ -34,6 +34,7 @@ public class Configuration {
         return new PriceTimeMatcher();
     }
 
+    // ToDo: Aeron events
     public static EventSink eventSinkConfig() {
         return new LogEvents();
     }
