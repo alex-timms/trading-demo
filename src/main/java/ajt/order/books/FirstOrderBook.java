@@ -40,17 +40,9 @@ public class FirstOrderBook implements OrderBook2 {
 
     @Override
     public void add(Order o) {
-        Long id = o.orderId;
-        Side side = o.side;
-        Long price = o.price;
-        var resolvedBook = side == BUY ? bids : asks;
-        Orders priceOrders = resolvedBook.get(price);
-        if (priceOrders == null) {
-            priceOrders = new Orders();
-            resolvedBook.put(price, priceOrders);
-        }
-        priceOrders.add(o);
-        byId.put(id, o);
+         (o.side == Side.BUY ? bids : asks)
+                .computeIfAbsent(o.price, p -> new Orders()).addLast(o);
+        byId.put(o.orderId, o);
     }
 
     @Override
