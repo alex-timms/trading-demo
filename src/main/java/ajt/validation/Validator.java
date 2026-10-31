@@ -1,8 +1,7 @@
 package ajt.validation;
 
-import ajt.order.Order;
 
-public interface Validator {
+public interface Validator<T> {
 
-    boolean validate(Order order);
+    boolean validate(T t);
 }

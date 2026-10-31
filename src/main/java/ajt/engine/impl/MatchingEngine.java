@@ -8,6 +8,7 @@ import ajt.order.Order;
 import ajt.order.OrderBook2;
 import ajt.order.books.FirstOrderBook;
 import ajt.serialization.Deserializer;
+import ajt.validation.Validator;
 
 import java.nio.ByteBuffer;
 import java.util.HashMap;
@@ -19,11 +20,13 @@ public class MatchingEngine implements Engine {
     private final Map<Integer, OrderBook2> books = new HashMap<>();
 
     Deserializer<Order> deserializer;
+    Validator<Order> validator;
     Matcher matcher;
     EventSink eventSink;
 
-    public MatchingEngine(Deserializer<Order> deserializer, Matcher matcher, EventSink eventSink, int[] ids) {
+    public MatchingEngine(Deserializer<Order> deserializer, Validator<Order> validator, Matcher matcher, EventSink eventSink, int[] ids) {
         this.deserializer = deserializer;
+        this.validator = validator;
         this.matcher = matcher;
         this.eventSink = eventSink;
         for (int i : ids) {
@@ -37,15 +40,14 @@ public class MatchingEngine implements Engine {
         // 2. look up the OrderBook for cmd.instrumentId
         // 3. matcher.match(order, book, sink)
         // 4. events go to the sink, which publishes them to the Aeron "events" stream
-        OrderGroup og = Optional.of(cmd)
+        Optional.of(cmd)
                 .map(deserializer::deserialize)
+                .filter(validator::validate)
                 .map(order -> {
                     OrderBook2 book = resolvedOrderBook(order);
-                    return new OrderGroup(order, book, eventSink);
+                    return new OrderGroup(order, book);
                 })
-                .get();
-        matcher.match(og.order(), og.book(), og.sink());
-
+                .ifPresent(og -> matcher.match(og.order(), og.book(), eventSink));
     }
 
     private OrderBook2 resolvedOrderBook(Order order) {
