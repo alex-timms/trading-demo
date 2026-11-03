@@ -59,6 +59,9 @@ public class FirstOrderBook implements OrderBook2 {
         var resolvedBook = side == BUY ? bids : asks;
         Orders priceOrders = resolvedBook.get(price);
         priceOrders.remove(o);
+        if (priceOrders.isEmpty()) {
+            resolvedBook.remove(price);
+        }
         byId.remove(id);
     }
 }

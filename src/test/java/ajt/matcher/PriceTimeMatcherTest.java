@@ -87,7 +87,7 @@ public class PriceTimeMatcherTest {
         // then
         verify(sink, times(1)).accepted(bid);
         verify(sink, times(1)).fill(bid, ask1, 10852L, 1000000);
-//        verify(sink, times(1)).fill(bid, ask2, 10855L, 500000);
+        verify(sink, times(1)).fill(bid, ask2, 10855L, 500000);
         verify(sink, times(0)).fill(eq(bid), eq(ask3), any(Long.class), any(Long.class));
     }
 
