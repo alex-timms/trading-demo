@@ -12,6 +12,7 @@ public class PriceTimeMatcher implements Matcher {
     public void match(Order order, OrderBook2 book, EventSink sink) {
         Order resting;
         Side opposite = order.side == Side.BUY ? Side.SELL : Side.BUY;
+        sink.accepted(order);
         while (
                 order.leavesQty > 0
                 && (resting = book.peekBest(opposite)) != null

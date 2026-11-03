@@ -8,6 +8,7 @@ import ajt.order.OrderBook2;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TreeMap;
 
 import static ajt.common.enums.Side.BUY;
@@ -35,7 +36,12 @@ public class FirstOrderBook implements OrderBook2 {
     @Override
     public Order peekBest(Side side) {
         var resolvedBook = side == BUY ? bids : asks;
-        return resolvedBook.firstEntry().getValue().getFirst();
+        return Optional.ofNullable(resolvedBook)
+                .map(TreeMap::firstEntry)
+                .map(Map.Entry::getValue)
+                .filter(orders -> !orders.isEmpty())
+                .map(Orders::getFirst)
+                .orElse(null);
     }
 
     @Override
