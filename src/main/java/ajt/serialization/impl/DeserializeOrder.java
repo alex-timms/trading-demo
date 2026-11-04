@@ -2,6 +2,7 @@ package ajt.serialization.impl;
 
 import ajt.common.constants.FIX;
 import ajt.common.enums.Side;
+import ajt.common.exceptions.IncompleteOrderDefinitionException;
 import ajt.order.Order;
 import ajt.serialization.Deserializer;
 
@@ -9,8 +10,6 @@ import java.nio.ByteBuffer;
 import java.util.Optional;
 
 public class DeserializeOrder implements Deserializer<Order> {
-
-
 
     private static final int INSTRUMENT_ID = 1;
 
@@ -169,16 +168,16 @@ public class DeserializeOrder implements Deserializer<Order> {
 
     private void validateOrder(Long orderId, Long qty, Long price, Side side) {
         if (orderId == null) {
-            throw new IllegalArgumentException("Missing required tag: " + FIX.TAGS.ORDER_ID_TAG);
+            throw new IncompleteOrderDefinitionException("Missing required tag: " + FIX.TAGS.ORDER_ID_TAG);
         }
         if (qty == null) {
-            throw new IllegalArgumentException("Missing required tag: " + FIX.TAGS.QUANTITY_TAG);
+            throw new IncompleteOrderDefinitionException("Missing required tag: " + FIX.TAGS.QUANTITY_TAG);
         }
         if (price == null) {
-            throw new IllegalArgumentException("Missing required tag: " + FIX.TAGS.PRICE_TAG);
+            throw new IncompleteOrderDefinitionException("Missing required tag: " + FIX.TAGS.PRICE_TAG);
         }
         if (side == null) {
-            throw new IllegalArgumentException("Missing required side tag: " + FIX.TAGS.SIDE_TAG);
+            throw new IncompleteOrderDefinitionException("Missing required side tag: " + FIX.TAGS.SIDE_TAG);
         }
     }
 
