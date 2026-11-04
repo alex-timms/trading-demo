@@ -48,7 +48,7 @@ public class DeserializeOrder implements Deserializer<Order> {
 
     private int readTag(ByteBuffer buffer) {
         while (buffer.hasRemaining()) {
-            int first = Byte.toUnsignedInt(buffer.get());
+            int first = buffer.get();
             if (first == FIX.SYMBOLS.SEPARATOR) {
                 continue;
             }
@@ -58,7 +58,7 @@ public class DeserializeOrder implements Deserializer<Order> {
 
             int tag = first - '0';
             while (buffer.hasRemaining()) {
-                int next = Byte.toUnsignedInt(buffer.get());
+                int next = buffer.get();
                 if (next == FIX.SYMBOLS.EQUAL) {
                     return tag;
                 }
@@ -67,7 +67,6 @@ public class DeserializeOrder implements Deserializer<Order> {
                 }
                 tag = (tag * 10) + (next - '0');
             }
-
             throw new IllegalArgumentException("Malformed tag: missing '=' delimiter");
         }
 
@@ -79,7 +78,7 @@ public class DeserializeOrder implements Deserializer<Order> {
         boolean hasDigit = false;
 
         while (buffer.hasRemaining()) {
-            int c = Byte.toUnsignedInt(buffer.get());
+            int c = buffer.get();
             if (c == FIX.SYMBOLS.SEPARATOR) {
                 break;
             }
@@ -89,7 +88,6 @@ public class DeserializeOrder implements Deserializer<Order> {
             hasDigit = true;
             value = (value * 10L) + (c - '0');
         }
-
         if (!hasDigit) {
             throw new IllegalArgumentException("Missing required tag: " + tag);
         }
@@ -104,7 +102,7 @@ public class DeserializeOrder implements Deserializer<Order> {
         boolean hasDigit = false;
 
         while (buffer.hasRemaining()) {
-            int c = Byte.toUnsignedInt(buffer.get());
+            int c = buffer.get();
             if (c == FIX.SYMBOLS.SEPARATOR) {
                 break;
             }
@@ -118,7 +116,6 @@ public class DeserializeOrder implements Deserializer<Order> {
             if (!isDigit(c)) {
                 throw new IllegalArgumentException("Invalid numeric value for tag " + FIX.TAGS.PRICE_TAG);
             }
-
             hasDigit = true;
             int digit = c - '0';
             if (!seenDot) {
@@ -131,7 +128,6 @@ public class DeserializeOrder implements Deserializer<Order> {
                 fractionalDigits++;
             }
         }
-
         if (!hasDigit) {
             throw new IllegalArgumentException("Missing required tag: " + FIX.TAGS.PRICE_TAG);
         }
@@ -148,21 +144,18 @@ public class DeserializeOrder implements Deserializer<Order> {
         if (!buffer.hasRemaining()) {
             throw new IllegalArgumentException("Missing required side tag: " + FIX.TAGS.SIDE_TAG);
         }
-
-        int sideRaw = Byte.toUnsignedInt(buffer.get());
+        int sideRaw = buffer.get();
         Side side = switch (sideRaw) {
             case '0' -> Side.BUY;
             case '1' -> Side.SELL;
             default -> throw new IllegalArgumentException("Unsupported side value: " + (char) sideRaw);
         };
-
         if (buffer.hasRemaining()) {
-            int next = Byte.toUnsignedInt(buffer.get());
+            int next = buffer.get();
             if (next != FIX.SYMBOLS.SEPARATOR) {
                 throw new IllegalArgumentException("Invalid side value for tag " + FIX.TAGS.SIDE_TAG);
             }
         }
-
         return side;
     }
 
@@ -183,7 +176,7 @@ public class DeserializeOrder implements Deserializer<Order> {
 
     private void skipValue(ByteBuffer buffer) {
         while (buffer.hasRemaining()) {
-            int c = Byte.toUnsignedInt(buffer.get());
+            int c = buffer.get();
             if (c == FIX.SYMBOLS.SEPARATOR) {
                 return;
             }
