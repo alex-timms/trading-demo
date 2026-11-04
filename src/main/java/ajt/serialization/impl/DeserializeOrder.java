@@ -48,7 +48,7 @@ public class DeserializeOrder implements Deserializer<Order> {
 
     private int readTag(ByteBuffer buffer) {
         while (buffer.hasRemaining()) {
-            int first = buffer.get() & 0xFF;
+            int first = Byte.toUnsignedInt(buffer.get());
             if (first == FIX.SYMBOLS.SEPARATOR) {
                 continue;
             }
@@ -58,7 +58,7 @@ public class DeserializeOrder implements Deserializer<Order> {
 
             int tag = first - '0';
             while (buffer.hasRemaining()) {
-                int next = buffer.get() & 0xFF;
+                int next = Byte.toUnsignedInt(buffer.get());
                 if (next == FIX.SYMBOLS.EQUAL) {
                     return tag;
                 }
@@ -79,7 +79,7 @@ public class DeserializeOrder implements Deserializer<Order> {
         boolean hasDigit = false;
 
         while (buffer.hasRemaining()) {
-            int c = buffer.get() & 0xFF;
+            int c = Byte.toUnsignedInt(buffer.get());
             if (c == FIX.SYMBOLS.SEPARATOR) {
                 break;
             }
@@ -104,7 +104,7 @@ public class DeserializeOrder implements Deserializer<Order> {
         boolean hasDigit = false;
 
         while (buffer.hasRemaining()) {
-            int c = buffer.get() & 0xFF;
+            int c = Byte.toUnsignedInt(buffer.get());
             if (c == FIX.SYMBOLS.SEPARATOR) {
                 break;
             }
@@ -149,7 +149,7 @@ public class DeserializeOrder implements Deserializer<Order> {
             throw new IllegalArgumentException("Missing required side tag: " + FIX.TAGS.SIDE_TAG);
         }
 
-        int sideRaw = buffer.get() & 0xFF;
+        int sideRaw = Byte.toUnsignedInt(buffer.get());
         Side side = switch (sideRaw) {
             case '0' -> Side.BUY;
             case '1' -> Side.SELL;
@@ -157,7 +157,7 @@ public class DeserializeOrder implements Deserializer<Order> {
         };
 
         if (buffer.hasRemaining()) {
-            int next = buffer.get() & 0xFF;
+            int next = Byte.toUnsignedInt(buffer.get());
             if (next != FIX.SYMBOLS.SEPARATOR) {
                 throw new IllegalArgumentException("Invalid side value for tag " + FIX.TAGS.SIDE_TAG);
             }
@@ -183,7 +183,7 @@ public class DeserializeOrder implements Deserializer<Order> {
 
     private void skipValue(ByteBuffer buffer) {
         while (buffer.hasRemaining()) {
-            int c = buffer.get() & 0xFF;
+            int c = Byte.toUnsignedInt(buffer.get());
             if (c == FIX.SYMBOLS.SEPARATOR) {
                 return;
             }
