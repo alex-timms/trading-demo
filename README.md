@@ -1,4 +1,7 @@
 # trading-demo
+Matching engine takes in a ByteBuffer in FIX format, deserializes, validates and 
+matches the order with appropriate bids/asks based on price-time priority, and rests
+any unfulfilled orders.
 
 ## Project Structure
 trading-demo/
