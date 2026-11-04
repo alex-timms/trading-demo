@@ -12,6 +12,8 @@ public class Order {
     public Order(long orderId, int instrumentId, Side side, long price, long qty) {
         this.orderId = orderId;
         this.instrumentId = instrumentId;
-        this.side = side; this.price = price; this.leavesQty = qty;
+        this.side = side;
+        this.price = price;
+        this.leavesQty = qty;
     }
 }

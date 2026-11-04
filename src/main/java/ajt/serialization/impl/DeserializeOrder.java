@@ -1,5 +1,6 @@
 package ajt.serialization.impl;
 
+import ajt.common.constants.FIX;
 import ajt.common.enums.Side;
 import ajt.order.Order;
 import ajt.serialization.Deserializer;
@@ -8,6 +9,9 @@ import java.nio.ByteBuffer;
 import java.util.Optional;
 
 public class DeserializeOrder implements Deserializer<Order> {
+
+
+
     private static final int INSTRUMENT_ID = 1;
 
     @Override
@@ -31,10 +35,10 @@ public class DeserializeOrder implements Deserializer<Order> {
             }
 
             switch (tag) {
-                case 11 -> orderId = readLongValue(buffer, "11");
-                case 38 -> qty = readLongValue(buffer, "38");
-                case 44 -> price = readScaledPrice(buffer);
-                case 54 -> side = readSideValue(buffer);
+                case FIX.TAGS.ORDER_ID_TAG -> orderId = readLongValue(buffer, "11");
+                case FIX.TAGS.QUANTITY_TAG -> qty = readLongValue(buffer, "38");
+                case FIX.TAGS.PRICE_TAG -> price = readScaledPrice(buffer);
+                case FIX.TAGS.SIDE_TAG -> side = readSideValue(buffer);
                 default -> skipValue(buffer);
             }
         }
@@ -43,25 +47,10 @@ public class DeserializeOrder implements Deserializer<Order> {
         return new Order(orderId, INSTRUMENT_ID, side, price, qty);
     }
 
-    private void validateOrder(Long orderId, Long qty, Long price, Side side) {
-        if (orderId == null) {
-            throw new IllegalArgumentException("Missing required tag: 11");
-        }
-        if (qty == null) {
-            throw new IllegalArgumentException("Missing required tag: 38");
-        }
-        if (price == null) {
-            throw new IllegalArgumentException("Missing required tag: 44");
-        }
-        if (side == null) {
-            throw new IllegalArgumentException("Missing required side tag: 54");
-        }
-    }
-
     private int readTag(ByteBuffer buffer) {
         while (buffer.hasRemaining()) {
             int first = buffer.get() & 0xFF;
-            if (first == '|') {
+            if (first == FIX.SYMBOLS.SEPARATOR) {
                 continue;
             }
             if (!isDigit(first)) {
@@ -71,7 +60,7 @@ public class DeserializeOrder implements Deserializer<Order> {
             int tag = first - '0';
             while (buffer.hasRemaining()) {
                 int next = buffer.get() & 0xFF;
-                if (next == '=') {
+                if (next == FIX.SYMBOLS.EQUATOR) {
                     return tag;
                 }
                 if (!isDigit(next)) {
@@ -92,7 +81,7 @@ public class DeserializeOrder implements Deserializer<Order> {
 
         while (buffer.hasRemaining()) {
             int c = buffer.get() & 0xFF;
-            if (c == '|') {
+            if (c == FIX.SYMBOLS.SEPARATOR) {
                 break;
             }
             if (!isDigit(c)) {
@@ -117,7 +106,7 @@ public class DeserializeOrder implements Deserializer<Order> {
 
         while (buffer.hasRemaining()) {
             int c = buffer.get() & 0xFF;
-            if (c == '|') {
+            if (c == FIX.SYMBOLS.SEPARATOR) {
                 break;
             }
             if (c == '.') {
@@ -170,7 +159,7 @@ public class DeserializeOrder implements Deserializer<Order> {
 
         if (buffer.hasRemaining()) {
             int next = buffer.get() & 0xFF;
-            if (next != '|') {
+            if (next != FIX.SYMBOLS.SEPARATOR) {
                 throw new IllegalArgumentException("Invalid side value for tag 54");
             }
         }
@@ -178,10 +167,25 @@ public class DeserializeOrder implements Deserializer<Order> {
         return side;
     }
 
+    private void validateOrder(Long orderId, Long qty, Long price, Side side) {
+        if (orderId == null) {
+            throw new IllegalArgumentException("Missing required tag: 11");
+        }
+        if (qty == null) {
+            throw new IllegalArgumentException("Missing required tag: 38");
+        }
+        if (price == null) {
+            throw new IllegalArgumentException("Missing required tag: 44");
+        }
+        if (side == null) {
+            throw new IllegalArgumentException("Missing required side tag: 54");
+        }
+    }
+
     private void skipValue(ByteBuffer buffer) {
         while (buffer.hasRemaining()) {
             int c = buffer.get() & 0xFF;
-            if (c == '|') {
+            if (c == FIX.SYMBOLS.SEPARATOR) {
                 return;
             }
         }
