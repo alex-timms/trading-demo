@@ -60,18 +60,19 @@ public class FirstOrderBook implements OrderBook2 {
         if (o == null) return;
 
         // Canonical order state comes from the index, not caller-provided object.
-        Order existing = byId.remove(o.orderId);
+        Order existing = byId.get(o.orderId);
         if (existing == null) return;
 
         var resolvedBook = bookFor(existing.side);
         Orders priceOrders = resolvedBook.get(existing.price);
         if (priceOrders == null) {
-            throw new IllegalArgumentException("Removed orderId: " + o.orderId + "but was not present in book");
+            throw new IllegalStateException("Removed orderId: " + o.orderId + " but was not present in book");
         };
         priceOrders.remove(existing);
         if (priceOrders.isEmpty()) {
             resolvedBook.remove(existing.price);
         }
+        byId.remove(o.orderId);
     }
 
     private TreeMap<Long, Orders> bookFor(Side side) {
