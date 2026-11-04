@@ -9,7 +9,11 @@ import ajt.order.Order;
 import ajt.serialization.Deserializer;
 import ajt.serialization.impl.DeserializeOrder;
 import ajt.validation.Validator;
+import ajt.validation.impl.CompositeValidator;
+import ajt.validation.impl.OrderValidator;
 import ajt.validation.impl.RiskValidator;
+
+import java.util.List;
 
 public class Configuration {
 
@@ -27,7 +31,15 @@ public class Configuration {
     }
 
     public static Validator<Order> orderValidatorConfig() {
+        return new OrderValidator();
+    }
+
+    public static Validator<Order> riskValidatorConfig() {
         return new RiskValidator();
+    }
+
+    public static Validator<Order> compositeOrderRiskValidatorConfig() {
+        return new CompositeValidator<>(List.of(orderValidatorConfig(), riskValidatorConfig()));
     }
 
     public static Matcher matcherConfig() {

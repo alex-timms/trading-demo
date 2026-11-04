@@ -3,6 +3,10 @@ Matching engine takes in a ByteBuffer in FIX format, deserializes, validates and
 matches the order with appropriate bids/asks based on price-time priority, and rests
 any unfulfilled orders.
 
+## Assumptions
+- The project currently handles limit orders only (FIX `40=2`, `OrdType=Limit`).
+- Other order types (for example market, IOC, FOK) are not supported yet.
+
 ## Project Structure
 trading-demo/
     common/         enums, exceptions, custom extensions, groupins
