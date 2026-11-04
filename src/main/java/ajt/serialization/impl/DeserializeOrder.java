@@ -14,14 +14,15 @@ public class DeserializeOrder implements Deserializer<Order> {
     public Order deserialize(ByteBuffer b) {
         return Optional.ofNullable(b)
                 .map(ByteBuffer::asReadOnlyBuffer)
-                .map(this::parseFields)
-                .map(this::validateOrder)
-                .map(this::toOrder)
+                .map(this::parseAndBuildOrder)
                 .orElseThrow(() -> new IllegalArgumentException("Order payload cannot be null"));
     }
 
-    private ParsedOrderFields parseFields(ByteBuffer buffer) {
-        ParsedOrderFields fields = new ParsedOrderFields();
+    private Order parseAndBuildOrder(ByteBuffer buffer) {
+        Long orderId = null;
+        Long qty = null;
+        Long price = null;
+        Side side = null;
 
         while (buffer.hasRemaining()) {
             int tag = readTag(buffer);
@@ -30,58 +31,31 @@ public class DeserializeOrder implements Deserializer<Order> {
             }
 
             switch (tag) {
-                case 11 -> {
-                    fields.orderId = readLongValue(buffer, "11");
-                    fields.hasOrderId = true;
-                }
-                case 38 -> {
-                    fields.qty = readLongValue(buffer, "38");
-                    fields.hasQty = true;
-                }
-                case 44 -> {
-                    fields.price = readScaledPrice(buffer);
-                    fields.hasPrice = true;
-                }
-                case 54 -> {
-                    fields.side = readSideValue(buffer);
-                    fields.hasSide = true;
-                }
+                case 11 -> orderId = readLongValue(buffer, "11");
+                case 38 -> qty = readLongValue(buffer, "38");
+                case 44 -> price = readScaledPrice(buffer);
+                case 54 -> side = readSideValue(buffer);
                 default -> skipValue(buffer);
             }
         }
 
-        return fields;
+        validateOrder(orderId, qty, price, side);
+        return new Order(orderId, INSTRUMENT_ID, side, price, qty);
     }
 
-    private ParsedOrderFields validateOrder(ParsedOrderFields fields) {
-        if (!fields.hasOrderId) {
+    private void validateOrder(Long orderId, Long qty, Long price, Side side) {
+        if (orderId == null) {
             throw new IllegalArgumentException("Missing required tag: 11");
         }
-        if (!fields.hasQty) {
+        if (qty == null) {
             throw new IllegalArgumentException("Missing required tag: 38");
         }
-        if (!fields.hasPrice) {
+        if (price == null) {
             throw new IllegalArgumentException("Missing required tag: 44");
         }
-        if (!fields.hasSide) {
+        if (side == null) {
             throw new IllegalArgumentException("Missing required side tag: 54");
         }
-        return fields;
-    }
-
-    private Order toOrder(ParsedOrderFields fields) {
-        return new Order(fields.orderId, INSTRUMENT_ID, fields.side, fields.price, fields.qty);
-    }
-
-    private static final class ParsedOrderFields {
-        private long orderId;
-        private long qty;
-        private long price;
-        private Side side;
-        private boolean hasOrderId;
-        private boolean hasQty;
-        private boolean hasPrice;
-        private boolean hasSide;
     }
 
     private int readTag(ByteBuffer buffer) {
