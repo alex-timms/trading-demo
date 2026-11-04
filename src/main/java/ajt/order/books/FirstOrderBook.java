@@ -35,8 +35,8 @@ public class FirstOrderBook implements OrderBook2 {
 
     @Override
     public Order peekBest(Side side) {
-        var resolvedBook = side == BUY ? bids : asks;
-        return Optional.ofNullable(resolvedBook)
+        return Optional.ofNullable(side)
+                .map(this::bookFor)
                 .map(TreeMap::firstEntry)
                 .map(Map.Entry::getValue)
                 .filter(orders -> !orders.isEmpty())
@@ -46,22 +46,35 @@ public class FirstOrderBook implements OrderBook2 {
 
     @Override
     public void add(Order o) {
-         (o.side == Side.BUY ? bids : asks)
-                .computeIfAbsent(o.price, p -> new Orders()).addLast(o);
+        if (byId.containsKey(o.orderId)) {
+            throw new IllegalArgumentException("Duplicate orderId: " + o.orderId);
+        }
         byId.put(o.orderId, o);
+         bookFor(o.side)
+                .computeIfAbsent(o.price, p -> new Orders()).addLast(o);
+
     }
 
     @Override
     public void remove(Order o) {
-        Long id = o.orderId;
-        Side side = o.side;
-        Long price = o.price;
-        var resolvedBook = side == BUY ? bids : asks;
-        Orders priceOrders = resolvedBook.get(price);
-        priceOrders.remove(o);
+        if (o == null) return;
+
+        // Canonical order state comes from the index, not caller-provided object.
+        Order existing = byId.remove(o.orderId);
+        if (existing == null) return;
+
+        var resolvedBook = bookFor(existing.side);
+        Orders priceOrders = resolvedBook.get(existing.price);
+        if (priceOrders == null) {
+            throw new IllegalArgumentException("Removed orderId: " + o.orderId + "but was not present in book");
+        };
+        priceOrders.remove(existing);
         if (priceOrders.isEmpty()) {
-            resolvedBook.remove(price);
+            resolvedBook.remove(existing.price);
         }
-        byId.remove(id);
+    }
+
+    private TreeMap<Long, Orders> bookFor(Side side) {
+        return side == Side.BUY ? bids : asks;
     }
 }
