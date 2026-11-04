@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.util.TreeMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class FirstOrderBooksTest {
 
@@ -60,5 +61,50 @@ public class FirstOrderBooksTest {
         assertThat(postBids.firstEntry().getValue().getLast()).isEqualTo(buyOrder3);
         assertThat(postBids.lastEntry().getKey()).isEqualTo(lowerPrice);
         assertThat(postBids.lastEntry().getValue().getFirst()).isEqualTo(buyOrder2);
+    }
+
+    @Test
+    public void testOrderBooks_AddDuplicateOrderId_Throws() {
+        // given
+        Order first = new Order(1L, 2, Side.BUY, 10_000, 1_000);
+        Order duplicateId = new Order(1L, 2, Side.SELL, 9_500, 2_000);
+        firstOrderBook.add(first);
+
+        // when / then
+        assertThatThrownBy(() -> firstOrderBook.add(duplicateId))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Duplicate orderId: 1");
+    }
+
+    @Test
+    public void testOrderBooks_RemoveByIdDifferentInstance_RemovesFromBookAndIndex() {
+        // given
+        long orderId = 11L;
+        Order resting = new Order(orderId, 2, Side.BUY, 10_000, 1_000);
+        Order removeRequest = new Order(orderId, 2, Side.SELL, 9_000, 10);
+        firstOrderBook.add(resting);
+
+        // when
+        firstOrderBook.remove(removeRequest);
+
+        // then
+        assertThat(firstOrderBook.getById()).doesNotContainKey(orderId);
+        assertThat(firstOrderBook.getBids()).isEmpty();
+    }
+
+    @Test
+    public void testOrderBooks_RemoveThrowsWhenOrderIndexExistsButBookLevelMissing() {
+        // given
+        long orderId = 12L;
+        long price = 10_000L;
+        Order resting = new Order(orderId, 2, Side.BUY, price, 1_000);
+        firstOrderBook.add(resting);
+        firstOrderBook.getBids().remove(price);
+
+        // when / then
+        assertThatThrownBy(() -> firstOrderBook.remove(resting))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("Removed orderId: " + orderId);
+        assertThat(firstOrderBook.getById()).containsKey(orderId);
     }
 }

@@ -8,6 +8,7 @@ import ajt.order.OrderBook2;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TreeMap;
 
 import static ajt.common.enums.Side.BUY;
@@ -34,33 +35,47 @@ public class FirstOrderBook implements OrderBook2 {
 
     @Override
     public Order peekBest(Side side) {
-        var resolvedBook = side == BUY ? bids : asks;
-        return resolvedBook.firstEntry().getValue().getFirst();
+        return Optional.ofNullable(side)
+                .map(this::bookFor)
+                .map(TreeMap::firstEntry)
+                .map(Map.Entry::getValue)
+                .filter(orders -> !orders.isEmpty())
+                .map(Orders::getFirst)
+                .orElse(null);
     }
 
     @Override
     public void add(Order o) {
-        Long id = o.orderId;
-        Side side = o.side;
-        Long price = o.price;
-        var resolvedBook = side == BUY ? bids : asks;
-        Orders priceOrders = resolvedBook.get(price);
-        if (priceOrders == null) {
-            priceOrders = new Orders();
-            resolvedBook.put(price, priceOrders);
+        if (byId.containsKey(o.orderId)) {
+            throw new IllegalArgumentException("Duplicate orderId: " + o.orderId);
         }
-        priceOrders.add(o);
-        byId.put(id, o);
+        byId.put(o.orderId, o);
+         bookFor(o.side)
+                .computeIfAbsent(o.price, p -> new Orders()).addLast(o);
+
     }
 
     @Override
     public void remove(Order o) {
-        Long id = o.orderId;
-        Side side = o.side;
-        Long price = o.price;
-        var resolvedBook = side == BUY ? bids : asks;
-        Orders priceOrders = resolvedBook.get(price);
-        priceOrders.remove(o);
-        byId.remove(id);
+        if (o == null) return;
+
+        // Canonical order state comes from the index, not caller-provided object.
+        Order existing = byId.get(o.orderId);
+        if (existing == null) return;
+
+        var resolvedBook = bookFor(existing.side);
+        Orders priceOrders = resolvedBook.get(existing.price);
+        if (priceOrders == null) {
+            throw new IllegalStateException("Removed orderId: " + o.orderId + " but was not present in book");
+        };
+        priceOrders.remove(existing);
+        if (priceOrders.isEmpty()) {
+            resolvedBook.remove(existing.price);
+        }
+        byId.remove(o.orderId);
+    }
+
+    private TreeMap<Long, Orders> bookFor(Side side) {
+        return side == Side.BUY ? bids : asks;
     }
 }
