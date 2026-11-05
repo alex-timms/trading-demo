@@ -8,6 +8,7 @@ any unfulfilled orders.
 - Other order types (for example market, IOC, FOK) are not supported yet.
 
 ## Project Structure
+```text
 trading-demo/
     aeron/          agents and infrastructure for Aeron messaging
     app/            creates the matching engine using the config
@@ -19,6 +20,7 @@ trading-demo/
     order/          order, order book definition
     serialization/  convert byteBuffer ◄─► order
     validation/     validate trade volume risk
+```
 
 ## Project Flow Diagram
 ```text
