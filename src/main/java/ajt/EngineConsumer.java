@@ -1,8 +1,8 @@
 package ajt;
 
 import ajt.common.constants.AERON;
-import ajt.config.AeronConfiguration;
 import ajt.engine.Engine;
+import ajt.infrastructure.aeron.AeronEndpoints;
 import io.aeron.Aeron;
 import io.aeron.Subscription;
 import io.aeron.logbuffer.FragmentHandler;
@@ -33,7 +33,7 @@ public class EngineConsumer implements Agent, AutoCloseable {
     public void onStart() {
         System.out.println("Starting EngineConsumer");
         // create subscriber to channel 2
-        sub = AeronConfiguration.addSub(aeron, AERON.STREAMS.INCOMING_ORDERS);
+        sub = AeronEndpoints.addSubscription(aeron, AERON.STREAMS.INCOMING_ORDERS);
     }
 
     @Override
