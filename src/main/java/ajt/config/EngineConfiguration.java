@@ -15,7 +15,7 @@ import ajt.validation.impl.RiskValidator;
 
 import java.util.List;
 
-public class Configuration {
+public class EngineConfiguration {
 
     public static MatchingEngine matchingEngineConfig(
             Deserializer<Order> deserializer,
