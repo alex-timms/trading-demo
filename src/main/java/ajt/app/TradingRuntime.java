@@ -2,6 +2,7 @@ package ajt.app;
 
 import io.aeron.Aeron;
 import io.aeron.Publication;
+import io.aeron.driver.MediaDriver;
 import org.agrona.CloseHelper;
 import org.agrona.concurrent.AgentRunner;
 import org.agrona.concurrent.IdleStrategy;
@@ -11,16 +12,19 @@ import java.nio.charset.StandardCharsets;
 
 public final class TradingRuntime implements AutoCloseable {
 
+    private final MediaDriver mediaDriver;
     private final Aeron aeron;
     private final Publication incomingOrdersPublication;
     private final AgentRunner engineConsumerRunner;
     private final IdleStrategy idle;
 
     public TradingRuntime(
+            MediaDriver mediaDriver,
             Aeron aeron,
             Publication incomingOrdersPublication,
             AgentRunner engineConsumerRunner,
             IdleStrategy idle) {
+        this.mediaDriver = mediaDriver;
         this.aeron = aeron;
         this.incomingOrdersPublication = incomingOrdersPublication;
         this.engineConsumerRunner = engineConsumerRunner;
@@ -52,6 +56,7 @@ public final class TradingRuntime implements AutoCloseable {
         CloseHelper.quietClose(engineConsumerRunner);
         CloseHelper.quietClose(incomingOrdersPublication);
         CloseHelper.quietClose(aeron);
+        CloseHelper.quietClose(mediaDriver);
     }
 }
 

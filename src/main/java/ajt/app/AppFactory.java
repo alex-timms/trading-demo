@@ -10,7 +10,6 @@ import ajt.matcher.Matcher;
 import ajt.order.Order;
 import ajt.serialization.Deserializer;
 import ajt.validation.Validator;
-import io.aeron.Aeron;
 import io.aeron.Publication;
 import org.agrona.concurrent.AgentRunner;
 import org.agrona.concurrent.IdleStrategy;
@@ -36,10 +35,10 @@ public final class AppFactory {
         );
 
         IdleStrategy idle = AeronConfiguration.idleStrategy();
-        Aeron aeron = AeronConfiguration.aeronStart();
-        Publication incomingOrdersPublication = AeronConfiguration.addPub(aeron, AERON.STREAMS.INCOMING_ORDERS);
+        AeronConfiguration.AeronRuntime runtime = AeronConfiguration.startRuntime();
+        Publication incomingOrdersPublication = AeronConfiguration.addPub(runtime.client(), AERON.STREAMS.INCOMING_ORDERS);
 
-        EngineConsumer consumer = new EngineConsumer(aeron, engine);
+        EngineConsumer consumer = new EngineConsumer(runtime.client(), engine);
         AgentRunner runner = new AgentRunner(
                 idle,
                 Throwable::printStackTrace,
@@ -47,7 +46,7 @@ public final class AppFactory {
                 consumer
         );
 
-        return new TradingRuntime(aeron, incomingOrdersPublication, runner, idle);
+        return new TradingRuntime(runtime.driver(), runtime.client(), incomingOrdersPublication, runner, idle);
     }
 }
 

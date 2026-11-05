@@ -10,25 +10,31 @@ import org.agrona.concurrent.IdleStrategy;
 import org.agrona.concurrent.SleepingIdleStrategy;
 
 public class AeronConfiguration {
-    // set channel type
+    public record AeronRuntime(MediaDriver driver, Aeron client) {
+    }
 
-    // set up idle strategy
-    private final IdleStrategy idle = new SleepingIdleStrategy();
+    public static AeronRuntime startRuntime() {
+        MediaDriver.Context driverContext = new MediaDriver.Context()
+                .dirDeleteOnStart(true)
+                .dirDeleteOnShutdown(true);
+        MediaDriver driver = MediaDriver.launch(driverContext);
 
-    public static Aeron aeronStart() {
-        MediaDriver driver = MediaDriver.launch();
-        return Aeron.connect();
+        Aeron.Context clientContext = new Aeron.Context()
+                .aeronDirectoryName(driver.aeronDirectoryName());
+        Aeron client = Aeron.connect(clientContext);
+
+        return new AeronRuntime(driver, client);
     }
 
     public static IdleStrategy idleStrategy() {
         return new SleepingIdleStrategy();
     }
 
-    public static Publication addPub(Aeron aeron, Integer streamId) {
+    public static Publication addPub(Aeron aeron, int streamId) {
         return aeron.addPublication(AERON.CHANNELS.IPC_CHANNEL, streamId);
     }
 
-    public static Subscription addSub(Aeron aeron, Integer streamId) {
+    public static Subscription addSub(Aeron aeron, int streamId) {
         return aeron.addSubscription(AERON.CHANNELS.IPC_CHANNEL, streamId);
     }
 }
