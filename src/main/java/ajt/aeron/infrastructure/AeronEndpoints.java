@@ -1,4 +1,4 @@
-package ajt.infrastructure.aeron;
+package ajt.aeron.infrastructure;
 
 import ajt.common.constants.AERON;
 import io.aeron.Aeron;

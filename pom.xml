@@ -45,6 +45,9 @@
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.2.5</version>
+                <configuration>
+                    <argLine>--add-opens java.base/sun.nio.ch=ALL-UNNAMED</argLine>
+                </configuration>
             </plugin>
         </plugins>
     </build>

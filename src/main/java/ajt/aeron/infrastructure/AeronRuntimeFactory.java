@@ -1,4 +1,4 @@
-package ajt.infrastructure.aeron;
+package ajt.aeron.infrastructure;
 
 import io.aeron.Aeron;
 import io.aeron.driver.MediaDriver;

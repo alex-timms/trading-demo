@@ -1,8 +1,8 @@
-package ajt;
+package ajt.aeron.agents;
 
 import ajt.common.constants.AERON;
 import ajt.engine.Engine;
-import ajt.infrastructure.aeron.AeronEndpoints;
+import ajt.aeron.infrastructure.AeronEndpoints;
 import io.aeron.Aeron;
 import io.aeron.Subscription;
 import io.aeron.logbuffer.FragmentHandler;
@@ -10,21 +10,20 @@ import org.agrona.concurrent.Agent;
 
 import java.nio.ByteBuffer;
 
-public class EngineConsumer implements Agent, AutoCloseable {
-
+public class EngineConsumerAgent implements Agent, AutoCloseable {
 
     private final Aeron aeron;
     private Subscription sub;
     private final Engine engine;
     private final FragmentHandler handler;
 
-    public EngineConsumer(Aeron aeron, Engine engine) {
+    public EngineConsumerAgent(Aeron aeron, Engine engine) {
         this.aeron = aeron;
         this.engine = engine;
         this.handler = (buffer, offset, length, header) -> {
             byte[] payload = new byte[length];
-            buffer.getBytes(offset, payload);          // copy from DirectBuffer slice
-            ByteBuffer cmd = ByteBuffer.wrap(payload); // hand off to existing engine API
+            buffer.getBytes(offset, payload);
+            ByteBuffer cmd = ByteBuffer.wrap(payload);
             this.engine.onNewOrder(cmd);
         };
     }
@@ -32,7 +31,6 @@ public class EngineConsumer implements Agent, AutoCloseable {
     @Override
     public void onStart() {
         System.out.println("Starting EngineConsumer");
-        // create subscriber to channel 2
         sub = AeronEndpoints.addSubscription(aeron, AERON.STREAMS.INCOMING_ORDERS);
     }
 

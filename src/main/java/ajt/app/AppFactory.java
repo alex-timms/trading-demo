@@ -1,12 +1,12 @@
 package ajt.app;
 
-import ajt.EngineConsumer;
 import ajt.common.constants.AERON;
 import ajt.config.Configuration;
 import ajt.engine.Engine;
 import ajt.events.EventSink;
-import ajt.infrastructure.aeron.AeronEndpoints;
-import ajt.infrastructure.aeron.AeronRuntimeFactory;
+import ajt.aeron.infrastructure.AeronEndpoints;
+import ajt.aeron.infrastructure.AeronRuntimeFactory;
+import ajt.aeron.agents.EngineConsumerAgent;
 import ajt.matcher.Matcher;
 import ajt.order.Order;
 import ajt.serialization.Deserializer;
@@ -39,7 +39,7 @@ public final class AppFactory {
         IdleStrategy idle = runtime.idleStrategy();
         Publication incomingOrdersPublication = AeronEndpoints.addPublication(runtime.client(), AERON.STREAMS.INCOMING_ORDERS);
 
-        EngineConsumer consumer = new EngineConsumer(runtime.client(), engine);
+        EngineConsumerAgent consumer = new EngineConsumerAgent(runtime.client(), engine);
         AgentRunner runner = new AgentRunner(
                 idle,
                 Throwable::printStackTrace,
@@ -50,4 +50,3 @@ public final class AppFactory {
         return new TradingRuntime(runtime.driver(), runtime.client(), incomingOrdersPublication, runner, idle);
     }
 }
-
