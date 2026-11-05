@@ -1,5 +1,6 @@
 package ajt.app;
 
+import ajt.engine.Engine;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -7,14 +8,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 class AppFactoryTest {
 
     @Test
-    void testCreateTradingRuntime_ConstructsAndCloses() {
-        TradingRuntime runtime = AppFactory.createTradingRuntime();
+    void testCreateEngine_ConstructsEngine() {
+        Engine engine = AppFactory.createEngine();
 
-        try {
-            assertThat(runtime).isNotNull();
-        } finally {
-            runtime.close();
-        }
+        assertThat(engine).isNotNull();
     }
 }
-
