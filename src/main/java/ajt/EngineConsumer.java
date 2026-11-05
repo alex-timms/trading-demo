@@ -15,24 +15,25 @@ public class EngineConsumer implements Agent, AutoCloseable {
 
     private final Aeron aeron;
     private Subscription sub;
-    private Engine engine;
-    private final FragmentHandler handler = (buffer, offset, length, header) -> {
-        byte[] payload = new byte[length];
-        buffer.getBytes(offset, payload);          // copy from DirectBuffer slice
-        ByteBuffer cmd = ByteBuffer.wrap(payload); // hand off to existing engine API
-        engine.onNewOrder(cmd);
-    };
+    private final Engine engine;
+    private final FragmentHandler handler;
 
     public EngineConsumer(Aeron aeron, Engine engine) {
         this.aeron = aeron;
         this.engine = engine;
+        this.handler = (buffer, offset, length, header) -> {
+            byte[] payload = new byte[length];
+            buffer.getBytes(offset, payload);          // copy from DirectBuffer slice
+            ByteBuffer cmd = ByteBuffer.wrap(payload); // hand off to existing engine API
+            this.engine.onNewOrder(cmd);
+        };
     }
 
     @Override
     public void onStart() {
         System.out.println("Starting EngineConsumer");
         // create subscriber to channel 2
-        sub = AeronConfiguration.addSub(aeron, AERON.CHANNELS.INCOMING_ID);
+        sub = AeronConfiguration.addSub(aeron, AERON.CHANNELS.INCOMING_ORDERS);
     }
 
     @Override
@@ -45,13 +46,12 @@ public class EngineConsumer implements Agent, AutoCloseable {
 
     @Override
     public int doWork() {
-        sub.poll(handler, 1000);
-        return 0;
+        return sub.poll(handler, 100);
     }
 
     @Override
     public String roleName() {
-        return "reroute-service";
+        return "engine-consumer";
     }
 
     @Override

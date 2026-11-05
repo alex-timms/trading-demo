@@ -42,7 +42,7 @@ public class Main {
         IdleStrategy idle = AeronConfiguration.idleStrategy();
         try (
                 Aeron aeron = AeronConfiguration.aeronStart();
-                Publication pub = AeronConfiguration.addPub(aeron, AERON.CHANNELS.INCOMING_ID);
+                Publication pub = AeronConfiguration.addPub(aeron, AERON.CHANNELS.INCOMING_ORDERS);
 
         ){
             var engineConsumer = new EngineConsumer(aeron, engine);
