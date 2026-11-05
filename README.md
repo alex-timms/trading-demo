@@ -9,6 +9,8 @@ any unfulfilled orders.
 
 ## Project Structure
 trading-demo/
+    aeron/          agents and infrastructure for Aeron messaging
+    app/            creates the matching engine using the config
     common/         enums, exceptions, custom extensions, groupins
     config/         custom configuration
     engine/         matching engine
@@ -19,12 +21,19 @@ trading-demo/
     validation/     validate trade volume risk
 
 ## Project Flow Diagram
-Aeron "orders" ──► MatchingEngine ──► risk check ──► Matcher ──► OrderBook
-│                             │
-└────────── events ◄──────────┘ ──► Aeron "events"
+```text
+Aeron "orders" -> MatchingEngine -> Deserialize -> Validate Order & Risk -> Matcher -> OrderBook
+                                                                              |
+                                                                              --> Aeron "events" Log
+```
+
+## Key Features
+1. Send orders to the matching engine via Aeron.
+2. Deserialize and validate incoming orders in FIX format.
+2. Match orders based on price-time priority.
+2. Publish events to Aeron, currently just logged
 
 ## Future developments planned
-1. Full unit test coverage
-2. Add deserializers that take a bytebuffer in FIX format and convert to orders
+1. Improved unit test coverage
 2. Publish events to Aeron, currently just logged
 3. Integration test between all components
