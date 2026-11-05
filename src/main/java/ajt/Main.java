@@ -3,7 +3,7 @@ package ajt;
 import ajt.aeron.agents.EngineConsumerAgent;
 import ajt.aeron.infrastructure.AeronEndpoints;
 import ajt.aeron.infrastructure.AeronRuntimeFactory;
-import ajt.app.AppFactory;
+import ajt.app.EngineFactory;
 import ajt.common.constants.AERON;
 import ajt.engine.Engine;
 import io.aeron.Publication;
@@ -25,7 +25,7 @@ public class Main {
         IdleStrategy idle = runtime.idleStrategy();
 
         // Create Trading App
-        Engine engine = AppFactory.createEngine();
+        Engine engine = EngineFactory.createMatchingEngine();
 
         // Trading App listening on incoming orders channel
         EngineConsumerAgent consumer = new EngineConsumerAgent(runtime.client(), engine);

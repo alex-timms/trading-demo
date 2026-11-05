@@ -8,12 +8,12 @@ import ajt.order.Order;
 import ajt.serialization.Deserializer;
 import ajt.validation.Validator;
 
-public final class AppFactory {
+public final class EngineFactory {
 
-    private AppFactory() {
+    private EngineFactory() {
     }
 
-    public static Engine createEngine() {
+    public static Engine createMatchingEngine() {
         Deserializer<Order> deserializer = Configuration.orderDeserializerConfig();
         Validator<Order> validator = Configuration.compositeOrderRiskValidatorConfig();
         Matcher matcher = Configuration.matcherConfig();

@@ -9,7 +9,7 @@ class AppFactoryTest {
 
     @Test
     void testCreateEngine_ConstructsEngine() {
-        Engine engine = AppFactory.createEngine();
+        Engine engine = EngineFactory.createMatchingEngine();
 
         assertThat(engine).isNotNull();
     }
