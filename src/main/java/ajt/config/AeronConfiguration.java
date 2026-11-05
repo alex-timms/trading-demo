@@ -1,6 +1,7 @@
 package ajt.config;
 
 
+import ajt.common.constants.AERON;
 import io.aeron.Aeron;
 import io.aeron.Publication;
 import io.aeron.Subscription;
@@ -10,7 +11,7 @@ import org.agrona.concurrent.SleepingIdleStrategy;
 
 public class AeronConfiguration {
     // set channel type
-    private static final String CHANNEL = "aeron:ipc";
+
     // set up idle strategy
     private final IdleStrategy idle = new SleepingIdleStrategy();
 
@@ -23,11 +24,11 @@ public class AeronConfiguration {
         return new SleepingIdleStrategy();
     }
 
-    public static Publication addPub(Aeron aeron, Integer channel) {
-        return aeron.addPublication(CHANNEL, channel);
+    public static Publication addPub(Aeron aeron, Integer streamId) {
+        return aeron.addPublication(AERON.CHANNELS.IPC_CHANNEL, streamId);
     }
 
-    public static Subscription addSub(Aeron aeron, Integer channel) {
-        return aeron.addSubscription(CHANNEL, channel);
+    public static Subscription addSub(Aeron aeron, Integer streamId) {
+        return aeron.addSubscription(AERON.CHANNELS.IPC_CHANNEL, streamId);
     }
 }

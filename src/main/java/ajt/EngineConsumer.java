@@ -33,7 +33,7 @@ public class EngineConsumer implements Agent, AutoCloseable {
     public void onStart() {
         System.out.println("Starting EngineConsumer");
         // create subscriber to channel 2
-        sub = AeronConfiguration.addSub(aeron, AERON.CHANNELS.INCOMING_ORDERS);
+        sub = AeronConfiguration.addSub(aeron, AERON.STREAMS.INCOMING_ORDERS);
     }
 
     @Override
