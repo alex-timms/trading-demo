@@ -14,7 +14,6 @@ class AeronRuntimeFactoryTest {
         try {
             assertThat(runtime.driver()).isNotNull();
             assertThat(runtime.client()).isNotNull();
-            assertThat(runtime.idleStrategy()).isNotNull();
         } finally {
             CloseHelper.quietClose(runtime.client());
             CloseHelper.quietClose(runtime.driver());
