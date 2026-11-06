@@ -8,6 +8,7 @@ any unfulfilled orders.
 - Other order types (for example market, IOC, FOK) are not supported yet.
 
 ## Project Structure
+```text
 trading-demo/
     aeron/          agents and infrastructure for Aeron messaging
     app/            creates the matching engine using the config
@@ -19,6 +20,7 @@ trading-demo/
     order/          order, order book definition
     serialization/  convert byteBuffer ◄─► order
     validation/     validate trade volume risk
+```
 
 ## Project Flow Diagram
 ```text
@@ -34,6 +36,8 @@ Aeron "orders" -> MatchingEngine -> Deserialize -> Validate Order & Risk -> Matc
 2. Publish events to Aeron, currently just logged
 
 ## Future developments planned
-1. Improved unit test coverage
+1. Pass multiple orders to main method
 2. Publish events to Aeron, currently just logged
-3. Integration test between all components
+3. Clean up the code and remove unused classes (Order)
+4. Integration test between all components
+5. Improved unit test coverage

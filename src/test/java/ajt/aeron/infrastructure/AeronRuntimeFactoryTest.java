@@ -9,12 +9,11 @@ class AeronRuntimeFactoryTest {
 
     @Test
     void testStartRuntime_ReturnsInitializedResources() {
-        AeronRuntimeFactory.AeronRuntime runtime = AeronRuntimeFactory.startRuntime();
+        AeronFactory.AeronRuntime runtime = AeronFactory.startRuntime();
 
         try {
             assertThat(runtime.driver()).isNotNull();
             assertThat(runtime.client()).isNotNull();
-            assertThat(runtime.idleStrategy()).isNotNull();
         } finally {
             CloseHelper.quietClose(runtime.client());
             CloseHelper.quietClose(runtime.driver());
