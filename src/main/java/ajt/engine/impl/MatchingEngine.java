@@ -40,6 +40,7 @@ public class MatchingEngine implements Engine {
         // 2. look up the OrderBook for cmd.instrumentId
         // 3. matcher.match(order, book, sink)
         // 4. events go to the sink, which publishes them to the Aeron "events" stream
+
         Optional.of(cmd)
                 .map(deserializer::deserialize)
                 .filter(validator::validate)

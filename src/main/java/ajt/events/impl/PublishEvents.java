@@ -19,15 +19,24 @@ public class PublishEvents implements EventSink {
 
     @Override
     public void accept(Order order) {
-        publisher.publishString("Order accepted: " + order.orderId);
+        publisher.publishString(String.format("Order accepted: %d", order.orderId));
     }
 
     @Override
     public void fill(Order aggressor, Order resting, long price, long qty) {
-        System.out.println("Order fill");
+        publisher.publishString(String.format(
+                "Order fill: %d (%s) with resting order: %d (%s) at price: %d for quantity: %d%n",
+                aggressor.orderId,
+                aggressor.side,
+                resting.orderId,
+                resting.side,
+                price,
+                qty
+        ));
     }
 
-    public void rest(Order aggressor) {
-        System.out.println("Order rested");
+    @Override
+    public void rest(Order order) {
+        publisher.publishString(String.format("Rest Order : " + order));
     }
 }
