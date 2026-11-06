@@ -17,7 +17,7 @@ import java.util.List;
 
 public class EngineConfiguration {
 
-    public static MatchingEngine matchingEngineConfig(
+    public static MatchingEngine matchingEngine(
             Deserializer<Order> deserializer,
             Validator<Order> validator,
             Matcher matcher,
@@ -26,28 +26,28 @@ public class EngineConfiguration {
         return new MatchingEngine(deserializer, validator, matcher, eventSink, ids);
     }
 
-    public static Deserializer<Order> orderDeserializerConfig() {
+    public static Deserializer<Order> orderDeserializer() {
         return new DeserializeOrder();
     }
 
-    public static Validator<Order> orderValidatorConfig() {
+    public static Validator<Order> orderValidator() {
         return new OrderValidator();
     }
 
-    public static Validator<Order> riskValidatorConfig() {
+    public static Validator<Order> riskValidator() {
         return new RiskValidator();
     }
 
-    public static Validator<Order> compositeOrderRiskValidatorConfig() {
-        return new CompositeValidator<>(List.of(orderValidatorConfig(), riskValidatorConfig()));
+    public static Validator<Order> compositeOrderRiskValidator() {
+        return new CompositeValidator<>(List.of(orderValidator(), riskValidator()));
     }
 
-    public static Matcher matcherConfig() {
+    public static Matcher matcher() {
         return new PriceTimeMatcher();
     }
 
     // ToDo: Aeron events
-    public static EventSink eventSinkConfig() {
+    public static EventSink eventSink() {
         return new LogEvents();
     }
 

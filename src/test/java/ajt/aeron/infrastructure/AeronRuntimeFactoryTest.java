@@ -9,7 +9,7 @@ class AeronRuntimeFactoryTest {
 
     @Test
     void testStartRuntime_ReturnsInitializedResources() {
-        AeronRuntimeFactory.AeronRuntime runtime = AeronRuntimeFactory.startRuntime();
+        AeronFactory.AeronRuntime runtime = AeronFactory.startRuntime();
 
         try {
             assertThat(runtime.driver()).isNotNull();

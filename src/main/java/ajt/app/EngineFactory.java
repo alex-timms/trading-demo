@@ -1,6 +1,6 @@
 package ajt.app;
 
-import ajt.config.Configuration;
+import ajt.config.EngineConfiguration;
 import ajt.engine.Engine;
 import ajt.events.EventSink;
 import ajt.matcher.Matcher;
@@ -14,13 +14,13 @@ public final class EngineFactory {
     }
 
     public static Engine createMatchingEngine() {
-        Deserializer<Order> deserializer = Configuration.orderDeserializerConfig();
-        Validator<Order> validator = Configuration.compositeOrderRiskValidatorConfig();
-        Matcher matcher = Configuration.matcherConfig();
-        EventSink sink = Configuration.eventSinkConfig();
-        int[] instrumentIds = new int[]{1};
+        Deserializer<Order> deserializer = EngineConfiguration.orderDeserializer();
+        Validator<Order> validator = EngineConfiguration.compositeOrderRiskValidator();
+        Matcher matcher = EngineConfiguration.matcher();
+        EventSink sink = EngineConfiguration.eventSink();
+        int[] instrumentIds = new int[]{1}; // ToDo: Add instrumentIds that are allowed
 
-        return Configuration.matchingEngineConfig(
+        return EngineConfiguration.matchingEngine(
                 deserializer,
                 validator,
                 matcher,

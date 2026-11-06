@@ -2,9 +2,10 @@ package ajt;
 
 import ajt.aeron.agents.EngineConsumerAgent;
 import ajt.aeron.infrastructure.AeronEndpoints;
-import ajt.aeron.infrastructure.AeronRuntimeFactory;
+import ajt.aeron.infrastructure.AeronFactory;
 import ajt.app.EngineFactory;
 import ajt.common.constants.AERON;
+import ajt.config.AeronConfiguration;
 import ajt.engine.Engine;
 import io.aeron.Publication;
 import org.agrona.CloseHelper;
@@ -21,8 +22,8 @@ public class Main {
         IO.println(String.format("Hello and welcome!"));
 
         // Setup Messaging Infrastructure
-        AeronRuntimeFactory.AeronRuntime runtime = AeronRuntimeFactory.startRuntime();
-        IdleStrategy idle = runtime.idleStrategy();
+        AeronFactory.AeronRuntime runtime = AeronFactory.startRuntime();
+        IdleStrategy idle = AeronConfiguration.idleStrategy();
 
         // Create Trading App
         Engine engine = EngineFactory.createMatchingEngine();
