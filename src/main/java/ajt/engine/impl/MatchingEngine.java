@@ -11,6 +11,7 @@ import ajt.serialization.Deserializer;
 import ajt.validation.Validator;
 
 import java.nio.ByteBuffer;
+import java.sql.SQLOutput;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -41,6 +42,7 @@ public class MatchingEngine implements Engine {
         // 3. matcher.match(order, book, sink)
         // 4. events go to the sink, which publishes them to the Aeron "events" stream
 
+        System.out.println("MatchingEngine.onNewOrder Received");
         Optional.of(cmd)
                 .map(deserializer::deserialize)
                 .filter(validator::validate)

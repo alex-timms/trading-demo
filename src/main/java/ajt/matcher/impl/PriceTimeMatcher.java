@@ -31,6 +31,7 @@ public class PriceTimeMatcher implements Matcher {
             if (resting.leavesQty == 0) book.remove(resting);        // used full rest, remove from order book
         }
         if (order.leavesQty > 0) {          // Every suitable opposite used and order quantity remaining
+            sink.rest(order);          // resting order is fully filled, remove from book
             book.add(order);                // an IOC order would be cancelled here instead
         }
     }
