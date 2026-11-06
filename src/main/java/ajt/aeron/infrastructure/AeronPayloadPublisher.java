@@ -24,7 +24,7 @@ public final class AeronPayloadPublisher {
     }
 
     public void publishString(String input) {
-        Objects.requireNonNull(input, "fixOrder");
+        Objects.requireNonNull(input, "input");
         publishBytes(input.getBytes(StandardCharsets.UTF_8));
     }
 

@@ -24,7 +24,7 @@ public class OrderBook {
     OrderBook(EventSink sink) { this.sink = sink; }
 
     void submitLimit(Order incoming) {
-        sink.accepted(incoming);
+        sink.accept(incoming);
         TreeMap<Long, Orders> opposite = incoming.side == Side.BUY ? asks : bids;
 
         while (incoming.leavesQty > 0 && !opposite.isEmpty()) {
@@ -55,6 +55,7 @@ public class OrderBook {
     }
 
     private void rest(Order o) {
+        sink.rest(o);
         (o.side == Side.BUY ? bids : asks)
                 .computeIfAbsent(o.price, p -> new Orders()).addLast(o);
         byId.put(o.orderId, o);

@@ -16,4 +16,16 @@ public class Order {
         this.price = price;
         this.leavesQty = qty;
     }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "Order: %d (%s) for instrument: %d at price: %d for quantity: %d",
+                orderId,
+                side,
+                instrumentId,
+                price,
+                leavesQty
+        );
+    }
 }

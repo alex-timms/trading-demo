@@ -30,7 +30,7 @@ public class PriceTimeMatcherTest {
 
     @BeforeEach
     public void setup() {
-        matcher = new PriceTimeMatcher();
+        matcher = new PriceTimeMatcher(sink);
         book.add(ask1);
         book.add(ask2);
         book.add(ask3);
@@ -43,10 +43,10 @@ public class PriceTimeMatcherTest {
         Order bid = new Order(5, 1, Side.BUY, 10853L, 1500000);
 
         // when
-        matcher.match(bid, book, sink);
+        matcher.match(bid, book);
 
         // then
-        verify(sink, times(1)).accepted(bid);
+        verify(sink, times(1)).accept(bid);
         verify(sink, times(1)).fill(bid, ask1, 10852L, 1000000);
     }
 
@@ -56,10 +56,10 @@ public class PriceTimeMatcherTest {
         Order bid = new Order(5, 1, Side.BUY, 10853L, 1000000);
 
         // when
-        matcher.match(bid, book, sink);
+        matcher.match(bid, book);
 
         // then
-        verify(sink, times(1)).accepted(bid);
+        verify(sink, times(1)).accept(bid);
         verify(sink, times(1)).fill(bid, ask1, 10852L, 1000000);
     }
 
@@ -69,10 +69,10 @@ public class PriceTimeMatcherTest {
         Order bid = new Order(5, 1, Side.BUY, 10851L, 1500000);
 
         // when
-        matcher.match(bid, book, sink);
+        matcher.match(bid, book);
 
         // then
-        verify(sink, times(1)).accepted(bid);
+        verify(sink, times(1)).accept(bid);
         verify(sink, times(0)).fill(any(Order.class), any(Order.class), any(Long.class), any(Long.class));
     }
 
@@ -82,10 +82,10 @@ public class PriceTimeMatcherTest {
         Order bid = new Order(5, 1, Side.BUY, 10855L, 1500000);
 
         // when
-        matcher.match(bid, book, sink);
+        matcher.match(bid, book);
 
         // then
-        verify(sink, times(1)).accepted(bid);
+        verify(sink, times(1)).accept(bid);
         verify(sink, times(1)).fill(bid, ask1, 10852L, 1000000);
         verify(sink, times(1)).fill(bid, ask2, 10855L, 500000);
         verify(sink, times(0)).fill(eq(bid), eq(ask3), any(Long.class), any(Long.class));
@@ -97,10 +97,10 @@ public class PriceTimeMatcherTest {
         Order ask = new Order(5, 1, Side.SELL, 10847L, 500_000);
 
         // when
-        matcher.match(ask, book, sink);
+        matcher.match(ask, book);
 
         // then
-        verify(sink, times(1)).accepted(ask);
+        verify(sink, times(1)).accept(ask);
         verify(sink, times(1)).fill(ask, bid1, 10848L, 500_000);
     }
 
@@ -110,10 +110,10 @@ public class PriceTimeMatcherTest {
         Order ask = new Order(5, 1, Side.SELL, 10850L, 500_000);
 
         // when
-        matcher.match(ask, book, sink);
+        matcher.match(ask, book);
 
         // then
-        verify(sink, times(1)).accepted(ask);
+        verify(sink, times(1)).accept(ask);
         verify(sink, times(0)).fill(eq(ask), eq(bid1), any(Long.class), any(Long.class));
     }
 }

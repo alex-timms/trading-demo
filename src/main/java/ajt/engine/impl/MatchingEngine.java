@@ -47,7 +47,7 @@ public class MatchingEngine implements Engine {
                     OrderBook2 book = resolvedOrderBook(order);
                     return new OrderGroup(order, book);
                 })
-                .ifPresent(og -> matcher.match(og.order(), og.book(), eventSink));
+                .ifPresent(og -> matcher.match(og.order(), og.book()));
     }
 
     private OrderBook2 resolvedOrderBook(Order order) {

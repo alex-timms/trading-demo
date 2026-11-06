@@ -6,5 +6,5 @@ import ajt.order.OrderBook2;
 
 public interface Matcher {
 
-    void match(Order order, OrderBook2 book, EventSink sink);
+    void match(Order order, OrderBook2 book);
 }

@@ -16,8 +16,8 @@ public final class EngineFactory {
     public static Engine createMatchingEngine() {
         Deserializer<Order> deserializer = EngineConfiguration.orderDeserializer();
         Validator<Order> validator = EngineConfiguration.compositeOrderRiskValidator();
-        Matcher matcher = EngineConfiguration.matcher();
         EventSink sink = EngineConfiguration.eventSink();
+        Matcher matcher = EngineConfiguration.matcher(sink);
         int[] instrumentIds = new int[]{1}; // ToDo: Add instrumentIds that are allowed
 
         return EngineConfiguration.matchingEngine(

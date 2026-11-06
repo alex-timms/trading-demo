@@ -8,11 +8,17 @@ import ajt.order.OrderBook2;
 
 public class PriceTimeMatcher implements Matcher {
 
+    private final EventSink sink;
+
+    public PriceTimeMatcher(EventSink sink){
+        this.sink = sink;
+    }
+
     @Override
-    public void match(Order order, OrderBook2 book, EventSink sink) {
+    public void match(Order order, OrderBook2 book) {
         Order resting;
         Side opposite = order.side == Side.BUY ? Side.SELL : Side.BUY;
-        sink.accepted(order);
+        sink.accept(order);
         while (
                 order.leavesQty > 0
                 && (resting = book.peekBest(opposite)) != null
