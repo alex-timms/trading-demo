@@ -45,7 +45,7 @@ public class SerializeOrder implements Serializer<Order> {
     }
 
     private String sideValue(Side side) {
-        return side == Side.BUY ? "0" : "1";
+        return side == Side.BUY ? "1" : "2";
     }
 
     private String formatPrice(long scaledPrice) {

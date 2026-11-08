@@ -5,7 +5,7 @@ import ajt.engine.Engine;
 import ajt.events.EventSink;
 import ajt.matcher.Matcher;
 import ajt.order.Order;
-import ajt.order.OrderBook2;
+import ajt.order.OrderBook;
 import ajt.order.books.FirstOrderBook;
 import ajt.serialization.Deserializer;
 import ajt.validation.Validator;
@@ -17,7 +17,7 @@ import java.util.Optional;
 // ToDo: Lombok
 public class MatchingEngine implements Engine {
 
-    private final Map<Integer, OrderBook2> books = new HashMap<>();
+    private final Map<Integer, OrderBook> books = new HashMap<>();
 
     Deserializer<Order> deserializer;
     Validator<Order> validator;
@@ -46,13 +46,13 @@ public class MatchingEngine implements Engine {
                 .map(deserializer::deserialize)
                 .filter(validator::validate)
                 .map(order -> {
-                    OrderBook2 book = resolvedOrderBook(order);
+                    OrderBook book = resolvedOrderBook(order);
                     return new OrderGroup(order, book);
                 })
                 .ifPresent(og -> matcher.match(og.order(), og.book()));
     }
 
-    private OrderBook2 resolvedOrderBook(Order order) {
+    private OrderBook resolvedOrderBook(Order order) {
         return books.get(order.instrumentId);
     }
 }

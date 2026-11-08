@@ -3,7 +3,7 @@ package ajt.order.books;
 import ajt.common.enums.Side;
 import ajt.common.ext.Orders;
 import ajt.order.Order;
-import ajt.order.OrderBook2;
+import ajt.order.OrderBook;
 
 import java.util.Comparator;
 import java.util.HashMap;
@@ -13,7 +13,7 @@ import java.util.TreeMap;
 
 
 // ToDo: Remove getters, refine method logic
-public class FirstOrderBook implements OrderBook2 {
+public class FirstOrderBook implements OrderBook {
 
     public TreeMap<Long, Orders> getAsks() {
         return asks;

@@ -1,10 +1,9 @@
 package ajt.matcher;
 
-import ajt.events.EventSink;
 import ajt.order.Order;
-import ajt.order.OrderBook2;
+import ajt.order.OrderBook;
 
 public interface Matcher {
 
-    void match(Order order, OrderBook2 book);
+    void match(Order order, OrderBook book);
 }

@@ -25,7 +25,7 @@ public class SerializeOrderTest {
         String fix = StandardCharsets.UTF_8.decode(result).toString();
 
         // then
-        assertThat(fix).isEqualTo("8=FIX.4.4|35=D|11=1|55=1|54=1|38=1500000|40=2|44=1.0853|");
+        assertThat(fix).isEqualTo("8=FIX.4.4|35=D|11=1|55=1|54=2|38=1500000|40=2|44=1.0853|");
     }
 
     @Test
@@ -38,7 +38,7 @@ public class SerializeOrderTest {
         String fix = StandardCharsets.UTF_8.decode(result).toString();
 
         // then
-        assertThat(fix).contains("54=0|");
+        assertThat(fix).contains("54=1|");
         assertThat(fix).contains("44=1.0850|");
     }
 

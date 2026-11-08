@@ -4,7 +4,7 @@ import ajt.common.enums.Side;
 import ajt.events.EventSink;
 import ajt.matcher.Matcher;
 import ajt.order.Order;
-import ajt.order.OrderBook2;
+import ajt.order.OrderBook;
 
 public class PriceTimeMatcher implements Matcher {
 
@@ -15,7 +15,7 @@ public class PriceTimeMatcher implements Matcher {
     }
 
     @Override
-    public void match(Order order, OrderBook2 book) {
+    public void match(Order order, OrderBook book) {
         Order resting;
         Side opposite = order.side == Side.BUY ? Side.SELL : Side.BUY;
         sink.accept(order);
