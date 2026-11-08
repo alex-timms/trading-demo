@@ -21,6 +21,7 @@ public class EngineConsumerAgent implements Agent, AutoCloseable {
         this.aeron = aeron;
         this.engine = engine;
         this.handler = (buffer, offset, length, header) -> {
+            System.out.println("Received message");
             byte[] payload = new byte[length];
             buffer.getBytes(offset, payload);
             ByteBuffer cmd = ByteBuffer.wrap(payload);

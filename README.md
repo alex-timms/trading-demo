@@ -3,10 +3,6 @@ Matching engine takes in a ByteBuffer in FIX format, deserializes, validates and
 matches the order with appropriate bids/asks based on price-time priority, and rests
 any unfulfilled orders.
 
-## Assumptions
-- The project currently handles limit orders only (FIX `40=2`, `OrdType=Limit`).
-- Other order types (for example market, IOC, FOK) are not supported yet.
-
 ## Project Structure
 ```text
 trading-demo/
@@ -32,12 +28,48 @@ Aeron "orders" -> MatchingEngine -> Deserialize -> Validate Order & Risk -> Matc
 ## Key Features
 1. Send orders to the matching engine via Aeron.
 2. Deserialize and validate incoming orders in FIX format.
-2. Match orders based on price-time priority.
-2. Publish events to Aeron, currently just logged
+3. Match orders based on price-time priority.
+4. Publish events to Aeron, currently just logged
 
 ## Future developments planned
-1. Pass multiple orders to main method
+1. Pass multiple orders to main method args
 2. Publish events to Aeron, currently just logged
 3. Clean up the code and remove unused classes (Order)
 4. Integration test between all components
 5. Improved unit test coverage
+
+## Assumptions
+- The project currently assumes limit orders only (FIX `40=2`, `OrdType=Limit`).
+- Other order types (for example market, IOC, FOK) are not supported yet.
+
+## Build & Run
+
+### Prerequisites
+- Java 25
+- Maven 3.9+
+
+### Build
+```bash
+mvn clean compile
+```
+
+### Run Tests
+```bash
+mvn test
+```
+
+### Run Main (Maven)
+```bash
+mvn -Dexec.mainClass=ajt.Main -Dexec.jvmArgs="--add-opens java.base/sun.nio.ch=ALL-UNNAMED" exec:java
+```
+
+### Run Main (IntelliJ)
+1. Open `ajt.Main`
+2. Create or use an Application run configuration for `ajt.Main`
+3. Add VM option: `--add-opens java.base/sun.nio.ch=ALL-UNNAMED`
+4. Run
+
+### Notes
+- The app uses Aeron IPC (`aeron:ipc`) and starts an embedded MediaDriver.
+- Orders are sent in FIX-like text format and consumed by `EngineConsumerAgent`.
+

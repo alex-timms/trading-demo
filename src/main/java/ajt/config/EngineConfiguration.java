@@ -42,8 +42,8 @@ public class EngineConfiguration {
         return new CompositeValidator<>(List.of(orderValidator(), riskValidator()));
     }
 
-    public static Matcher matcher() {
-        return new PriceTimeMatcher();
+    public static Matcher matcher(EventSink sink) {
+        return new PriceTimeMatcher(sink);
     }
 
     // ToDo: Aeron events

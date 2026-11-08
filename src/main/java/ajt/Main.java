@@ -20,10 +20,11 @@ public class Main {
         final Engine engine = EngineFactory.createMatchingEngine();
         // Setup Messaging Infrastructure
         final AeronFactory.AeronRuntime runtime = AeronFactory.startRuntime();
-        final IdleStrategy idle = AeronConfiguration.idleStrategy();
+        final IdleStrategy agentIdleStrat = AeronConfiguration.idleStrategy();
+        final IdleStrategy pubIdleStrat = AeronConfiguration.idleStrategy();
         // Trading App listening on incoming orders channel
         final EngineConsumerAgent consumer = new EngineConsumerAgent(runtime.client(), engine);
-        final AgentRunner engineRunner = new AgentRunner(idle, Throwable::printStackTrace, null, consumer);
+        final AgentRunner engineRunner = new AgentRunner(agentIdleStrat, Throwable::printStackTrace, null, consumer);
 
         Publication publication = null;
         try {
@@ -31,10 +32,13 @@ public class Main {
             publication = AeronEndpoints.addPublication(runtime.client(), AERON.STREAMS.INCOMING_ORDERS);
             AgentRunner.startOnThread(engineRunner);
 
-            AeronPayloadPublisher orderPublisher = new AeronPayloadPublisher(publication, idle);
+            AeronPayloadPublisher orderPublisher = new AeronPayloadPublisher(publication, pubIdleStrat);
             orderPublisher.waitUntilConnected();
             orderPublisher.publishString("8=FIX.4.4|35=D|11=1|55=EUR/USD|54=1|38=150000|40=2|44=1.0853|");
 
+            Thread.sleep(200);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         } finally {
             // close Messaging infrastructure
             CloseHelper.quietClose(engineRunner);

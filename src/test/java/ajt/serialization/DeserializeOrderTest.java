@@ -20,7 +20,7 @@ public class DeserializeOrderTest {
     void testDeserialization() {
         // given
         String input = "8=FIX.4.4|35=D|11=1|55=EUR/USD|54=1|38=1500000|40=2|44=1.0853|";
-        Order output = new Order(1L, 1, Side.SELL, 10853L, 1_500_000L);
+        Order output = new Order(1L, 1, Side.BUY, 10853L, 1_500_000L);
 
         // when
         var result = deserializer.deserialize(ByteBuffer.wrap(input.getBytes(StandardCharsets.UTF_8)));
