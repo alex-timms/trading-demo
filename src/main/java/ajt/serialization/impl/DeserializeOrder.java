@@ -146,8 +146,8 @@ public class DeserializeOrder implements Deserializer<Order> {
         }
         int sideRaw = buffer.get();
         Side side = switch (sideRaw) {
-            case '0' -> Side.BUY;
-            case '1' -> Side.SELL;
+            case '1' -> Side.BUY;
+            case '2' -> Side.SELL;
             default -> throw new IllegalArgumentException("Unsupported side value: " + (char) sideRaw);
         };
         if (buffer.hasRemaining()) {

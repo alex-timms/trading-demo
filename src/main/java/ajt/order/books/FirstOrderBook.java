@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
 
-import static ajt.common.enums.Side.BUY;
+
 // ToDo: Remove getters, refine method logic
 public class FirstOrderBook implements OrderBook2 {
 

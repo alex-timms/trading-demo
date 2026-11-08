@@ -36,7 +36,7 @@ Aeron "orders" -> MatchingEngine -> Deserialize -> Validate Order & Risk -> Matc
 2. Publish events to Aeron, currently just logged
 
 ## Future developments planned
-1. Pass multiple orders to main method
+1. Pass multiple orders to main method args
 2. Publish events to Aeron, currently just logged
 3. Clean up the code and remove unused classes (Order)
 4. Integration test between all components

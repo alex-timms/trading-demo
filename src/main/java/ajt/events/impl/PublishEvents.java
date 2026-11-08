@@ -37,6 +37,6 @@ public class PublishEvents implements EventSink {
 
     @Override
     public void rest(Order order) {
-        publisher.publishString(String.format("Rest Order : " + order));
+        publisher.publishString("Rest Order : " + order);
     }
 }
