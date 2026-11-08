@@ -3,10 +3,6 @@ Matching engine takes in a ByteBuffer in FIX format, deserializes, validates and
 matches the order with appropriate bids/asks based on price-time priority, and rests
 any unfulfilled orders.
 
-## Assumptions
-- The project currently handles limit orders only (FIX `40=2`, `OrdType=Limit`).
-- Other order types (for example market, IOC, FOK) are not supported yet.
-
 ## Project Structure
 ```text
 trading-demo/
@@ -41,3 +37,7 @@ Aeron "orders" -> MatchingEngine -> Deserialize -> Validate Order & Risk -> Matc
 3. Clean up the code and remove unused classes (Order)
 4. Integration test between all components
 5. Improved unit test coverage
+
+## Assumptions
+- The project currently assumes limit orders only (FIX `40=2`, `OrdType=Limit`).
+- Other order types (for example market, IOC, FOK) are not supported yet.
