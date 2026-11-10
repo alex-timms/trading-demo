@@ -12,7 +12,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class FirstOrderBooksTest {
 
-    FirstOrderBook firstOrderBook = new FirstOrderBook();
+    OrderBookImpl firstOrderBook = new OrderBookImpl();
 
     @Test
     public void testOrderBooks_Add() {

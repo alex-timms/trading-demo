@@ -33,14 +33,20 @@ Aeron "orders" -> MatchingEngine -> Deserialize -> Validate Order & Risk -> Matc
 
 ## Future developments planned
 1. Pass multiple orders to main method args
-2. Publish events to Aeron, currently just logged
-3. Clean up the code and remove unused classes (Order)
+2. Unhappy Path Features
+   1. Orders that fail validation are currently dropped without an event
+   2. Malformed messages raise an exception in the consumer agent
+   3. Duplicate check before matching and reject, 
+3. Publish events to Aeron, currently just logged
 4. Integration test between all components
 5. Improved unit test coverage
+6. CI workflow on GH Actions
+7. Allow multiple instruments
 
 ## Assumptions
 - The project currently assumes limit orders only (FIX `40=2`, `OrdType=Limit`).
 - Other order types (for example market, IOC, FOK) are not supported yet.
+- Built for only one instrument, need to expand for multiple
 
 ## Build & Run
 
