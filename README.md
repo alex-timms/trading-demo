@@ -8,10 +8,10 @@ any unfulfilled orders.
 trading-demo/
     aeron/          agents and infrastructure for Aeron messaging
     app/            creates the matching engine using the config
-    common/         enums, exceptions, custom extensions, groupins
+    common/         enums, exceptions, custom extensions, groupings
     config/         custom configuration
     engine/         matching engine
-    event/          log trade events
+    events/         log trade events
     matcher/        price time matcher
     order/          order, order book definition
     serialization/  convert byteBuffer ◄─► order
@@ -31,17 +31,18 @@ Aeron "orders" -> MatchingEngine -> Deserialize -> Validate Order & Risk -> Matc
 3. Match orders based on price-time priority.
 4. Publish events to Aeron, currently just logged
 
-## Future developments planned
-1. Pass multiple orders to main method args
-2. Unhappy Path Features
-   1. Orders that fail validation are currently dropped without an event
-   2. Malformed messages raise an exception in the consumer agent
-   3. Duplicate check before matching and reject, 
-3. Publish events to Aeron, currently just logged
-4. Integration test between all components
-5. Improved unit test coverage
-6. CI workflow on GH Actions
-7. Allow multiple instruments
+## Known limitations and planned work
+
+**Error handling (planned, not yet implemented)**
+- Orders that fail validation are currently dropped silently. Planned: emit a reject event with a reason.
+- Malformed messages currently raise an exception in the consumer agent. Planned: route them through the same reject path.
+- Duplicate order IDs are only detected when an order rests on the book, after matching. Planned: check before matching and reject.
+
+**Scope**
+- One instrument and limit orders only. The symbol (55) and order type (40) tags are not parsed, so non-limit orders are not rejected. Planned: multiple instruments and order-type validation.
+
+**Other planned work**
+- Publish events to Aeron (currently logged), an end-to-end test, broader unit test coverage, and a GitHub Actions workflow.
 
 ## Assumptions
 - The project currently assumes limit orders only (FIX `40=2`, `OrdType=Limit`).
