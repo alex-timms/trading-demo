@@ -29,7 +29,7 @@ Aeron "orders" -> MatchingEngine -> Deserialize -> Validate Order & Risk -> Matc
 1. Send orders to the matching engine via Aeron.
 2. Deserialize and validate incoming orders in FIX format.
 3. Match orders based on price-time priority.
-4. Publish events to Aeron, currently just logged
+4. Emit trade events through an event sink (currently logged to console).
 
 ## Known limitations and planned work
 
