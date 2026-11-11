@@ -4,8 +4,7 @@ import ajt.common.enums.Side;
 import ajt.events.EventSink;
 import ajt.matcher.impl.PriceTimeMatcher;
 import ajt.order.Order;
-import ajt.order.OrderBook;
-import ajt.order.books.FirstOrderBook;
+import ajt.order.books.OrderBookImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -21,7 +20,7 @@ public class PriceTimeMatcherTest {
 
     EventSink sink = Mockito.mock(EventSink.class);
 
-    OrderBook book = new FirstOrderBook();
+    ajt.order.OrderBook book = new OrderBookImpl();
 
     final Order ask1 = new Order(1, 1, Side.SELL, 10852L, 1_000_000);
     final Order ask2 = new Order(2, 1, Side.SELL, 10855L, 2_000_000);

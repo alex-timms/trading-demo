@@ -13,7 +13,7 @@ import java.util.TreeMap;
 
 
 // ToDo: Remove getters, refine method logic
-public class FirstOrderBook implements OrderBook {
+public class OrderBookImpl implements OrderBook {
 
     public TreeMap<Long, Orders> getAsks() {
         return asks;

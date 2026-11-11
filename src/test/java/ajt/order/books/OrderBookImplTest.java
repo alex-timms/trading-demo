@@ -10,9 +10,9 @@ import java.util.TreeMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-public class FirstOrderBooksTest {
+public class OrderBookImplTest {
 
-    FirstOrderBook firstOrderBook = new FirstOrderBook();
+    OrderBookImpl firstOrderBook = new OrderBookImpl();
 
     @Test
     public void testOrderBooks_Add() {
