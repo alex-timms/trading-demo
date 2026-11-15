@@ -67,6 +67,7 @@ links to the documentation and sample benchmarks.
 - The project currently assumes limit orders only (FIX `40=2`, `OrdType=Limit`).
 - Other order types (for example market, IOC, FOK) are not supported yet.
 - Built for only one instrument, need to expand for multiple
+- Order IDs are assumed to be unique across the whole session. Duplicates are rejected by `DuplicateOrderIdValidator`, which keeps one set of every ID received. Multiple instruments will need this revisited (global versus per-instrument IDs).
 
 ## Build & Run
 

@@ -10,6 +10,7 @@ import ajt.serialization.Deserializer;
 import ajt.serialization.impl.DeserializeOrder;
 import ajt.validation.Validator;
 import ajt.validation.impl.CompositeValidator;
+import ajt.validation.impl.DuplicateOrderIdValidator;
 import ajt.validation.impl.OrderValidator;
 import ajt.validation.impl.RiskValidator;
 
@@ -30,6 +31,10 @@ public class EngineConfiguration {
         return new DeserializeOrder();
     }
 
+    public static Validator<Order> uniqueOrderValidator() {
+        return new DuplicateOrderIdValidator(10000);
+    }
+
     public static Validator<Order> orderValidator() {
         return new OrderValidator();
     }
@@ -39,7 +44,7 @@ public class EngineConfiguration {
     }
 
     public static Validator<Order> compositeOrderRiskValidator() {
-        return new CompositeValidator<>(List.of(orderValidator(), riskValidator()));
+        return new CompositeValidator<>(List.of(uniqueOrderValidator(), orderValidator(), riskValidator()));
     }
 
     public static Matcher matcher(EventSink sink) {

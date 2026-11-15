@@ -12,7 +12,7 @@ public class OrderValidator implements Validator<Order> {
                 && order.instrumentId > 0
                 && order.side != null
                 && order.price > 0
-                && order.leavesQty > 0;
+                && order.leavesQty() > 0;
     }
 }
 

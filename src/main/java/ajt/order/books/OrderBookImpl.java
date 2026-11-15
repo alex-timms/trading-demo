@@ -24,7 +24,7 @@ public class OrderBookImpl implements OrderBook {
     }
 
     public Map<Long, Order> getById() {
-        return byId;
+        return Map.copyOf(byId);
     }
 
     // bids: highest price first;

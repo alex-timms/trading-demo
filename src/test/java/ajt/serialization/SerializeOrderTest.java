@@ -56,7 +56,7 @@ public class SerializeOrderTest {
         assertThat(parsed.instrumentId).isEqualTo(1);
         assertThat(parsed.side).isEqualTo(input.side);
         assertThat(parsed.price).isEqualTo(input.price);
-        assertThat(parsed.leavesQty).isEqualTo(input.leavesQty);
+        assertThat(parsed.leavesQty()).isEqualTo(input.leavesQty());
     }
 }
 

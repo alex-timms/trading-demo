@@ -30,7 +30,7 @@ public class DeserializeOrderTest {
         assertThat(result.instrumentId).isEqualTo(output.instrumentId);
         assertThat(result.side).isEqualTo(output.side);
         assertThat(result.price).isEqualTo(output.price);
-        assertThat(result.leavesQty).isEqualTo(output.leavesQty);
+        assertThat(result.leavesQty()).isEqualTo(output.leavesQty());
     }
 
     @Test
