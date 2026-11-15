@@ -84,6 +84,9 @@ mvn clean compile
 mvn test
 ```
 
+### Run Benchmarks
+See [`src/test/java/ajt/bench/README.md`](src/test/java/ajt/bench/README.md).
+
 ### Run Main (Maven)
 ```bash
 mvn -Dexec.mainClass=ajt.Main -Dexec.jvmArgs="--add-opens java.base/sun.nio.ch=ALL-UNNAMED" exec:java
