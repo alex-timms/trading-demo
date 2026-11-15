@@ -1,6 +1,7 @@
 # Matcher benchmark
 
-A JMH microbenchmark of `PriceTimeMatcher.match`. It exists to measure what each hot-path change makes to speed and allocation, one change at a time. See `hot-path-optimisation-notes.md` for the list of changes.
+A JMH microbenchmark of `PriceTimeMatcher.match`. It exists to measure what each hot-path change makes to speed and allocation, one change at a time.
+Results are recorded in the `Results log` section.
 
 ## What it tests
 
