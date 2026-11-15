@@ -108,14 +108,23 @@ Before any hot-path change. JDK as built locally. `avgt` rows and `sample` perce
 ## Results log
 
 Add one row per change, measured with the same command and on the same machine. Record the `askSideCycle` and `bidSideCycle` figures for the 1,000-level scenario, or both if you have room.
+Noise level: repeat runs of unchanged code differ by about 1 to 3 ns/op, so treat smaller differences as "no measurable change". The tail percentiles (p0.999, p0.9999) vary a lot between runs of the same code; only trust a drop that repeats.
 
-| Change | ns/op (ask, 1000) | ns/op (bid, 1000) | B/op | p0.999 (ask, 1000) | p0.9999 (ask, 1000) |
-|---|---|---|---|---|---|
-| Baseline | 41.098 | 40.515 | 162 | 250.0 | 2120.3 |
-| `peekBest` without `Optional` | | | | | |
-| Primitive locals in `DeserializeOrder`, `DirectBuffer` input | | | | | |
-| `Long2ObjectHashMap` for the ID index | | | | | |
-| `removeFirst()` instead of `remove(Object)` | | | | | |
+| Change | ns/op (ask, 1000) | ns/op (bid, 1000) | B/op | p0.999 (ask, 1000) | p0.9999 (ask, 1000) | Verdict |
+|---|---|---|---|---|---|---|
+| Baseline | 41.098 | 40.515 | 162 | 250.0 | 2120.3 | |
+| Baseline (rerun) | 39.596 | 39.501 | 162 | 406.0 | 11068.9 | Reproduces baseline within noise |
+| `peekBest` via `firstKey` + `get` | 44.471 | 52.851 | 162 | 156.0 | 1686.0 | Slower by 5 to 13 ns: `get` repeats the tree search that `firstKey` already did. Reverted. |
+| `peekBest` single descent (`firstEntry` + `peekFirst`) | 36.669 | 41.900 | 162 | 322.0 | 4278.0 | No measurable change. Kept: same speed, simpler, does not rely on escape analysis. |
+| Primitive locals in `DeserializeOrder`, `DirectBuffer` input | | | | | | Not covered by this benchmark (it never calls the deserialiser) |
+| `Long2ObjectHashMap` for the ID index | | | | | | |
+| `removeFirst()` instead of `remove(Object)` | | | | | | |
+
+### Notes
+
+- Removing the `Optional` chain from `peekBest` changed neither time nor allocation (162 B/op throughout). The JIT's escape analysis was most likely already removing those objects, so the real allocation is elsewhere: probably boxed `Long` keys, `HashMap` nodes, and a new `Orders` deque for each price level.
+- `Order` itself accounts for roughly 48 B of the 162 B/op and cannot be removed in this benchmark.
+- Raw per-run output for each row above is the JMH summary table; keep it alongside the commit so a figure can be re-checked.
 
 ## Reading the results with care
 
