@@ -44,6 +44,25 @@ Aeron "orders" -> MatchingEngine -> Deserialize -> Validate Order & Risk -> Matc
 **Other planned work**
 - Publish events to Aeron (currently logged), an end-to-end test, broader unit test coverage, and a GitHub Actions workflow.
 
+## Performance benchmarking
+
+The matcher is benchmarked with [JMH](https://openjdk.org/projects/code-tools/jmh), the OpenJDK
+microbenchmark harness. The aim is to measure what each candidate hot-path change (for example, removing
+allocation) actually does to speed, bytes allocated per call and tail latency, one change at a time,
+instead of assuming it helps.
+
+- **What is measured:** `PriceTimeMatcher.match` against a populated order book, with a mix of resting
+  orders, full fills and partial fills. The event sink is a no-op, so logging is excluded.
+- **Status:** a baseline is recorded. The first change tried, removing the `Optional` chain in `peekBest`,
+  made no measurable difference to speed or allocation.
+- **Details:** how the benchmark works, how to run it, what each metric means and its target, and the
+  full before/after results log are in
+  [`src/test/java/ajt/bench/README.md`](src/test/java/ajt/bench/README.md).
+
+New to JMH? It handles JIT warm-up, repeated runs in separate JVMs and allocation profiling, which
+hand-written timing loops usually get wrong. The [official JMH page](https://openjdk.org/projects/code-tools/jmh)
+links to the documentation and sample benchmarks.
+
 ## Assumptions
 - The project currently assumes limit orders only (FIX `40=2`, `OrdType=Limit`).
 - Other order types (for example market, IOC, FOK) are not supported yet.
