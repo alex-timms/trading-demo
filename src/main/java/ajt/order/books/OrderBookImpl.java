@@ -12,19 +12,19 @@ import java.util.Optional;
 import java.util.TreeMap;
 
 
-// ToDo: Remove getters, refine method logic
 public class OrderBookImpl implements OrderBook {
 
-    public TreeMap<Long, Orders> getAsks() {
-        return asks;
+    Integer getBookSize(Side side) {
+        return bookFor(side).size();
     }
 
-    public TreeMap<Long, Orders> getBids() {
-        return bids;
+    //ToDo: Replace for method that can't mutate book state
+    TreeMap<Long, Orders> getBook(Side side) {
+        return bookFor(side);
     }
 
-    public Map<Long, Order> getById() {
-        return byId;
+    Map<Long, Order> getById() {
+        return Map.copyOf(byId);
     }
 
     // bids: highest price first;

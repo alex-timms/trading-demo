@@ -23,7 +23,7 @@ public class OrderBookImplTest {
         firstOrderBook.add(buyOrder);
 
         // then
-        var postBids = firstOrderBook.getBids();
+        var postBids = firstOrderBook.getBook(Side.BUY);
         var orderID = firstOrderBook.getById().get(1L);
         assertThat(orderID).isEqualTo(buyOrder);
         assertThat(postBids.size()).isEqualTo(1);
@@ -54,8 +54,9 @@ public class OrderBookImplTest {
                 .containsEntry(orderID1, buyOrder1)
                 .containsEntry(orderID2, buyOrder2)
                 .containsEntry(orderID3, buyOrder3);
-        TreeMap<Long, Orders> postBids = firstOrderBook.getBids();
-        assertThat(postBids.size()).isEqualTo(2);
+        var bidSize = firstOrderBook.getBookSize(Side.BUY);
+        TreeMap<Long, Orders> postBids = firstOrderBook.getBook(Side.BUY);
+        assertThat(bidSize).isEqualTo(2);
         assertThat(postBids.firstEntry().getKey()).isEqualTo(bestPrice);
         assertThat(postBids.firstEntry().getValue().getFirst()).isEqualTo(buyOrder1);
         assertThat(postBids.firstEntry().getValue().getLast()).isEqualTo(buyOrder3);
@@ -89,7 +90,7 @@ public class OrderBookImplTest {
 
         // then
         assertThat(firstOrderBook.getById()).doesNotContainKey(orderId);
-        assertThat(firstOrderBook.getBids()).isEmpty();
+        assertThat(firstOrderBook.getBook(Side.BUY)).isEmpty();
     }
 
     @Test
@@ -99,7 +100,7 @@ public class OrderBookImplTest {
         long price = 10_000L;
         Order resting = new Order(orderId, 2, Side.BUY, price, 1_000);
         firstOrderBook.add(resting);
-        firstOrderBook.getBids().remove(price);
+        firstOrderBook.getBook(Side.BUY).remove(price);
 
         // when / then
         assertThatThrownBy(() -> firstOrderBook.remove(resting))

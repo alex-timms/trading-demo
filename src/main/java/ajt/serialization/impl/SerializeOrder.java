@@ -26,7 +26,7 @@ public class SerializeOrder implements Serializer<Order> {
         appendTag(sb, FIX.TAGS.ORDER_ID_TAG, o.orderId);
         appendTag(sb, FIX.TAGS.INSTRUMENT_ID_TAG, o.instrumentId);
         appendTag(sb, FIX.TAGS.SIDE_TAG, sideValue(o.side));
-        appendTag(sb, FIX.TAGS.QUANTITY_TAG, o.leavesQty);
+        appendTag(sb, FIX.TAGS.QUANTITY_TAG, o.leavesQty());
         appendTag(sb, 40, "2");
         appendTag(sb, FIX.TAGS.PRICE_TAG, formatPrice(o.price));
 
