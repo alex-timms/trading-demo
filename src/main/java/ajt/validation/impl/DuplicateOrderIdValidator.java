@@ -9,7 +9,7 @@ public class DuplicateOrderIdValidator implements Validator<Order> {
     private final LongHashSet seenIds;
 
     public DuplicateOrderIdValidator(int expectedOrders) {
-        this.seenIds = new LongHashSet(expectedOrders);   // pre-sized, see point 3
+        this.seenIds = new LongHashSet(expectedOrders);   // pre-sized
     }
 
     @Override
